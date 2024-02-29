@@ -1,23 +1,28 @@
-<project name="ant-sample" basedir="." default="build">
+<project name="ant-sample" basedir="." default="compile">
 
-    <!-- properties -->
-    <property name="src.dir"     value="src"/>
-	<property name="test.dir" value="test/java" />
-    <property name="build.dir"   value="build"/>
+    
+     <property name="src.dir"     value="src"/>
+	<property name="build.dir"   value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
-	<property name="lib.dir" value="lib" />											 
+	<property name="lib.dir" value="lib" />									 
     <property name="jar.dir"     value="${build.dir}/jar"/>
 	<property name="dist.dir" value="dist" />
-	<property name="doc.dir"     value="doc"/>
+	<property name="doc.dir"     value="doc"/> 
+	<property name="batch.file" location="shell_file/first.bat" />
+	<property name="program.path" location="D:\workspace\java\linux shell\ant-sample-master\build\jar\ant-sample.jar" />
+	<property name="java.home" location="C:\Program Files\Java\jdk-17" />
 
-    <!-- targets -->
-    <target name="compile" description="compile project">
+    <!-- targets
+    <target name="compile" description="compile project"> 
         <mkdir dir="${classes.dir}"/>
         <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false"/>
     </target>
-
-									
-    <target name="jar" depends="compile" description="generate the distribution jar">
+    <target name="run" depends="compile" description="run application">
+        <java classname="com.example.Main" classpath="build"/>
+    </target>
+	 -->
+	 
+	     <target name="jar" depends="compile" description="generate the distribution jar">
         <mkdir dir="${jar.dir}"/>
         <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
             <manifest>
@@ -25,42 +30,25 @@
             </manifest>
         </jar>
     </target>
-   <target name="package" depends="compile" description="Generate JAR file">
-        <jar destfile="${dist.dir}/${project.name}-${project.version}.jar" basedir=
-         "${build.classes.dir}"/>
+		
+	 <target name="compile">
+        <javac srcdir="src" destdir="build"/>
     </target>
-			  
-    <target name="run" depends="jar" description="run application">
-        <java jar="${jar.dir}/${ant.project.name}.jar" fork="true"/>
-					   
-										  
-													  
-													  
-						
-										   
-																	  
-						
-				
-    </target>
-
-    <target name="build" depends="jar" description="build application"/>
-
-													
-    <target name="doc" description="generate documentation">
-        <mkdir dir="${doc.dir}" />
-        <javadoc destdir="${doc.dir}" sourcepath="${src.dir}"/>
-    </target>
-
-																  
-    <target name="clean" description="clean up build files">
-        <delete dir="${build.dir}"/>
-																  
-			   
-        <delete dir="${doc.dir}" />
-    </target>
-
-    <target name="rebuild" depends="clean,build" description="rebuild application"/>
+    <target name="run" depends="compile">
+        <java classname="piona.Main" classpath="build"/>
+    </target>	
 	
 	
+	    <target name="run-batch">
+        <echo message="Running the batch file..." />
 
+        <!-- Execute the batch file using exec task -->
+        <exec executable="${batch.file}" failonerror="true">
+            <arg value="-jar" />
+            <arg value="${program.path}" />
+        </exec>
+
+        <echo message="Batch file execution completed." />
+    </target>
+		
 </project>
